@@ -10,6 +10,8 @@ public class Action {
     @Nullable
     private Integer page;
 
+    private String sender;
+
     public String getIntent() {
         return intent;
     }
@@ -25,5 +27,13 @@ public class Action {
 
     public void setPage(@Nullable Integer page) {
         this.page = page;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 }
