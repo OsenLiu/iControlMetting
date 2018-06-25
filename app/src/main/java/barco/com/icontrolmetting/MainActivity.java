@@ -54,8 +54,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         switch (v.getId()) {
             case R.id.connect_button:
             {
-                officeService.connectServer("192.168.1.88");
-
+//                officeService.connectServer("192.168.1.88");
+                Intent controlIntent = new Intent(MainActivity.this, ControllerActivity.class);
+                startActivity(controlIntent);
             }
                 break;
         }
