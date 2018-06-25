@@ -8,6 +8,10 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 public class ControllerActivity extends BaseActivity implements
         GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener{
@@ -18,7 +22,7 @@ public class ControllerActivity extends BaseActivity implements
 
 
     private GestureDetectorCompat mDetector;
-
+    private TextView pageTextview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +38,27 @@ public class ControllerActivity extends BaseActivity implements
         if(officeService!=null && !officeService.isConnectServer()) {
             finish();
         }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(officeService!=null) {
+            officeService.disconnectServer();
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onServiceConnected() {
+        officeService.getCurrentPage();
     }
 
     private void initView() {
 
         mDetector = new GestureDetectorCompat(this, this);
         mDetector.setOnDoubleTapListener(this);
-
+        pageTextview = findViewById(R.id.page_textView);
     }
 
     @Override
@@ -53,7 +71,24 @@ public class ControllerActivity extends BaseActivity implements
         finish();
     }
 
-
+    @Override
+    protected void msgReceived(String msg) {
+        Gson gson = new Gson();
+        try {
+            Response res = gson.fromJson(msg, Response.class);
+            if(res.getCode() == 0) {
+                if(res.getPage() != null) {
+                    pageTextview.setText(String.valueOf(res.getPage()));
+                }
+            }
+            else {
+                Toast.makeText(this, "No powerpoint is open", Toast.LENGTH_LONG).show();
+            }
+        }
+        catch (Exception ex) {
+            Log.e(TAG, Log.getStackTraceString(ex));
+        }
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -117,6 +152,7 @@ public class ControllerActivity extends BaseActivity implements
                 if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                     if (diffX > 0) {
                         Log.d(TAG, "swipe right");
+                        officeService.playOffice();
                     } else {
                         Log.d(TAG, "swipe left");
                     }
@@ -126,10 +162,10 @@ public class ControllerActivity extends BaseActivity implements
             else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                 if (diffY > 0) {
                     Log.d(TAG, "swipe down");
-//                    officeService.nextPage();
+                    officeService.nextPage();
                 } else {
                     Log.d(TAG, "swipe up");
-//                    officeService.previousPage();
+                    officeService.previousPage();
                 }
                 result = true;
             }

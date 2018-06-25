@@ -24,17 +24,26 @@
         android:id="@+id/ip_editText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="116dp"
+        android:digits="0123456789."
         android:ems="10"
         android:inputType="numberDecimal|number"
-        android:text="IP"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:digits="0123456789."
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:text="IP:"
+        app:layout_constraintBottom_toBottomOf="@+id/ip_editText"
+        app:layout_constraintEnd_toStartOf="@+id/ip_editText"
+        app:layout_constraintTop_toTopOf="@+id/ip_editText" />
 </android.support.constraint.ConstraintLayout>

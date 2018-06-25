@@ -11,6 +11,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.http.AsyncHttpClient;
+import com.koushikdutta.async.http.AsyncHttpGet;
 import com.koushikdutta.async.http.WebSocket;
 
 public class OfficeService extends Service {
@@ -19,6 +20,10 @@ public class OfficeService extends Service {
     public static final String OFFICE_SERVER_CONNECTED = "com.barco.OfficeService.connected";
     public static final String OFFICE_SERVER_DISCONNECTED = "com.barco.OfficeService.disconnected";
     public static final String OFFICE_SERVER_RESPONSE = "com.barco.OfficeService.response";
+
+    public static final String OFFICE_ACTION_RESPONSE = "com.barco.OfficeService.action.response";
+
+    public static final int TIMEOUT =5000;
 
 
     private IBinder OfficeBinder;
@@ -46,9 +51,11 @@ public class OfficeService extends Service {
     }
 
     public void connectServer(String ip) {
-        String url = String.format("ws://%s:8089", ip);
+        String url = String.format("http://%s:8089", ip);
         Log.d(TAG, "server is "+url);
-        AsyncHttpClient.getDefaultInstance().websocket(url, null, new AsyncHttpClient.WebSocketConnectCallback() {
+        AsyncHttpGet request = new AsyncHttpGet(url);
+        request.setTimeout(TIMEOUT);
+        AsyncHttpClient.getDefaultInstance().websocket(request, null, new AsyncHttpClient.WebSocketConnectCallback() {
             @Override
             public void onCompleted(Exception ex, WebSocket webSocket) {
                 Log.d(TAG, ">>>onCompleted");
@@ -74,6 +81,7 @@ public class OfficeService extends Service {
                     @Override
                     public void onStringAvailable(String s) {
                         Log.i(TAG, "new msg: "+s);
+                        handleMessage(s);
                     }
                 });
                 Intent intent = new Intent();
@@ -83,6 +91,18 @@ public class OfficeService extends Service {
 
 
         });
+    }
+
+    public void disconnectServer() {
+        server.close();
+    }
+
+    private void handleMessage(String msg) {
+        Intent intent = new Intent();
+        intent.setAction(OFFICE_SERVER_RESPONSE);
+        intent.putExtra(OFFICE_ACTION_RESPONSE, msg);
+        sendBroadcast(intent);
+
     }
 
     public boolean isConnectServer() {
@@ -122,6 +142,22 @@ public class OfficeService extends Service {
     public void moveToLast() {
         Action action = new Action();
         action.setIntent("last");
+        action.setSender(SENDER);
+        Gson gson = new Gson();
+        server.send(gson.toJson(action));
+    }
+
+    public void getCurrentPage() {
+        Action action = new Action();
+        action.setIntent("get_page");
+        action.setSender(SENDER);
+        Gson gson = new Gson();
+        server.send(gson.toJson(action));
+    }
+
+    public void playOffice() {
+        Action action = new Action();
+        action.setIntent("play");
         action.setSender(SENDER);
         Gson gson = new Gson();
         server.send(gson.toJson(action));

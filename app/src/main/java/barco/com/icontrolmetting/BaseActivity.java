@@ -19,6 +19,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected abstract void serverConnected();
     protected abstract void serverDisConnected();
+    protected void msgReceived(String msg) {};
+    protected void onServiceConnected() {}
 
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -26,6 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.i(TAG, "Office service connected");
             officeService = ((OfficeService.OfficeBinder)service).getService();
+            BaseActivity.this.onServiceConnected();
         }
 
         @Override
@@ -43,6 +46,10 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
             else if(intent.getAction().equals(OfficeService.OFFICE_SERVER_DISCONNECTED)) {
                 serverDisConnected();
+            }
+            else if(intent.getAction().equals(OfficeService.OFFICE_SERVER_RESPONSE)) {
+                String msg = intent.getStringExtra(OfficeService.OFFICE_ACTION_RESPONSE);
+                msgReceived(msg);
             }
         }
     }
