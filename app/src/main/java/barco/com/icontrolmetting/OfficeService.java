@@ -162,4 +162,12 @@ public class OfficeService extends Service {
         Gson gson = new Gson();
         server.send(gson.toJson(action));
     }
+
+    public void stopPlay() {
+        Action action = new Action();
+        action.setIntent("stop_play");
+        action.setSender(SENDER);
+        Gson gson = new Gson();
+        server.send(gson.toJson(action));
+    }
 }

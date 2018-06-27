@@ -155,6 +155,7 @@ public class ControllerActivity extends BaseActivity implements
                         officeService.playOffice();
                     } else {
                         Log.d(TAG, "swipe left");
+//                        officeService.stopPlay();
                     }
                     result = true;
                 }
