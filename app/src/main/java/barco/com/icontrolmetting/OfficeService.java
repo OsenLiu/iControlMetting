@@ -170,4 +170,30 @@ public class OfficeService extends Service {
         Gson gson = new Gson();
         server.send(gson.toJson(action));
     }
+
+    public void enableLaser(boolean isEnable) {
+        Action action = new Action();
+        action.setIntent("enable_laser");
+        action.setLaser(true);
+        action.setSender(SENDER);
+        Gson gson = new Gson();
+        server.send(gson.toJson(action));
+    }
+
+    public void enableColorPen(boolean isEnable) {
+        Action action = new Action();
+        action.setIntent("enable_color_pen");
+        action.setLaser(true);
+        action.setSender(SENDER);
+        Gson gson = new Gson();
+        server.send(gson.toJson(action));
+    }
+
+    public void marker() {
+        Action action = new Action();
+        action.setIntent("marker");
+        action.setSender(SENDER);
+        Gson gson = new Gson();
+        server.send(gson.toJson(action));
+    }
 }

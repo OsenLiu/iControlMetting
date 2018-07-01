@@ -9,6 +9,7 @@ public class Action {
     private String intent;
     @Nullable
     private Integer page;
+    private boolean isLaser = false;
 
     private String sender;
 
@@ -35,5 +36,13 @@ public class Action {
 
     public void setSender(String sender) {
         this.sender = sender;
+    }
+
+    public boolean isLaser() {
+        return isLaser;
+    }
+
+    public void setLaser(boolean laser) {
+        isLaser = laser;
     }
 }
