@@ -75,14 +75,20 @@ public class ControllerActivity extends BaseActivity implements
     protected void msgReceived(String msg) {
         Gson gson = new Gson();
         try {
-            Response res = gson.fromJson(msg, Response.class);
-            if(res.getCode() == 0) {
-                if(res.getPage() != null) {
-                    pageTextview.setText(String.valueOf(res.getPage()));
-                }
+            Message gMsg = gson.fromJson(msg, Message.class);
+            if(gMsg.getIntent().equals("event_page_changed")) {
+                PageEvent pe = gson.fromJson(msg, PageEvent.class);
+                pageTextview.setText(String.valueOf(pe.getPage()));
             }
             else {
-                Toast.makeText(this, "No powerpoint is open", Toast.LENGTH_LONG).show();
+                Response res = gson.fromJson(msg, Response.class);
+                if (res.getCode() == 0) {
+                    if (res.getPage() != null) {
+                        pageTextview.setText(String.valueOf(res.getPage()));
+                    }
+                } else {
+                    Toast.makeText(this, "No powerpoint is open", Toast.LENGTH_LONG).show();
+                }
             }
         }
         catch (Exception ex) {
